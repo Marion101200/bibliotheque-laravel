@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<a href="{{ route('register') }}">Créer un compte</a>
+<a href="{{ route('login') }}">Connexion</a>
 <head>
     <title>Bibliothèque Manga</title>
 </head>
