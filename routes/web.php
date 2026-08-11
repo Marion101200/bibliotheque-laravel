@@ -36,13 +36,16 @@ Route::middleware('auth')->group(function () {
         return "Bienvenue dans l'espace admin";
     })->middleware('admin');
 
-    // Emprunter un manga
-    Route::post('/mangas/{manga}/emprunter', [EmpruntController::class, 'store'])
-        ->name('emprunts.store');
-
-        Route::get('/mes-emprunts', [EmpruntController::class, 'index'])
+    
+Route::get('/mes-emprunts', [EmpruntController::class, 'index'])
     ->name('emprunts.index');
 
+Route::post('/mangas/{manga}/emprunter', [EmpruntController::class, 'store'])
+    ->name('emprunts.store');
+
+Route::delete('/emprunts/{emprunt}', [EmpruntController::class, 'destroy'])
+    ->name('emprunts.destroy');
+    
     // Routes de gestion des mangas pour l'administrateur
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
 

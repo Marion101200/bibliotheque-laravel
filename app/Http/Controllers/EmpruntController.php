@@ -40,4 +40,25 @@ return view('mes-emprunts', compact('emprunts'));
 
         return back()->with('success', 'Manga emprunté avec succès !');
     }
+
+    public function destroy(Emprunt $emprunt)
+{
+// Vérifie que l'emprunt appartient bien à l'utilisateur connecté
+if ($emprunt->user_id !== auth()->id()) {
+abort(403);
+}
+
+// Rend le manga disponible
+$emprunt->manga->update([
+    'disponible' => true,
+]);
+
+// Enregistre la date de retour
+$emprunt->update([
+    'date_retour' => now()->toDateString(),
+]);
+
+return back()->with('success', 'Manga rendu avec succès !');
+
+}
 }

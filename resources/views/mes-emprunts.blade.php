@@ -108,11 +108,13 @@
                     {{ $emprunt->date_emprunt }}
                 </p>
 
-                <div class="retour">
-                    <button type="button">
-                        Rendre le manga
-                    </button>
-                </div>
+<form action="{{ route('emprunts.destroy', $emprunt) }}" method="POST" class="retour" > @csrf @method('DELETE')
+
+<button type="submit">
+    Rendre le manga
+</button>
+
+</form>
 
             </div>
 
