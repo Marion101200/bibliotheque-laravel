@@ -62,19 +62,20 @@
         font-weight: bold;
     }
 
-    .emprunter {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 10px 15px;
-        background-color: #333;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-    }
+.emprunter {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-    .emprunter:hover {
-        background-color: #555;
-    }
+.emprunter:hover {
+    background-color: #555;
+}
 </style>
 ```
 
@@ -125,9 +126,13 @@
                     Disponible
                 </p>
 
-                <a href="#" class="emprunter">
-                    Emprunter
-                </a>
+<form action="{{ route('emprunts.store', $manga) }}" method="POST"> @csrf
+
+<button type="submit" class="emprunter">
+    Emprunter
+</button>
+
+</form>
 
             @else
 
