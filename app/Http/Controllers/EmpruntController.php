@@ -8,6 +8,17 @@ use Illuminate\Http\Request;
 
 class EmpruntController extends Controller
 {
+    public function index()
+{
+$emprunts = auth()->user()
+->emprunts()
+->with('manga')
+->whereNull('date_retour')
+->get();
+
+return view('mes-emprunts', compact('emprunts'));
+
+}
     public function store(Request $request, Manga $manga)
     {
         // Vérifie que le manga est disponible

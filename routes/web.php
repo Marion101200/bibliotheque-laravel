@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/mangas/{manga}/emprunter', [EmpruntController::class, 'store'])
         ->name('emprunts.store');
 
+        Route::get('/mes-emprunts', [EmpruntController::class, 'index'])
+    ->name('emprunts.index');
+
     // Routes de gestion des mangas pour l'administrateur
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
 
