@@ -8,16 +8,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next)
     {
-         if (!auth()->check() || auth()->user()->role !== 'admin') {
-        abort(403);
-    }
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('mangas.index');
+        }
+
         return $next($request);
     }
 }
