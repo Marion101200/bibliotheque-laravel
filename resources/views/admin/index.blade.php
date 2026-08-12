@@ -2,210 +2,122 @@
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Administration</title>
+    <title>Administration - MangaLib</title>
 
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 30px;
-        }
-
-        h1 {
-            margin-bottom: 10px;
-        }
-
-        .intro {
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 35px;
-        }
-
-        .stat {
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        .stat-icon {
-            font-size: 35px;
-        }
-
-        .stat-number {
-            font-size: 30px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .stat-name {
-            color: #666;
-        }
-
-        .actions {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .action {
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: #222;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        .action:hover {
-            background-color: #444;
-        }
-
-        @media (max-width: 800px) {
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 500px) {
-            .stats {
-                grid-template-columns: 1fr;
-            }
-        }
-
-    </style>
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+
+<body class="min-h-screen bg-slate-100 text-slate-900">
 
     @include('components.navbar')
 
-    <div class="container">
 
-        <h1>👑 Administration</h1>
+    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
 
-        <p class="intro">
-            Bienvenue dans votre espace d'administration.
-        </p>
 
-        <div class="stats">
+        {{-- En-tête --}}
+        <div class="mb-10">
 
-            <div class="stat">
+            <p class="text-sm font-semibold uppercase tracking-wider text-indigo-600">
+                Administration
+            </p>
 
-                <div class="stat-icon">
-                    📚
-                </div>
+            <h1 class="mt-2 text-4xl font-extrabold tracking-tight text-slate-900">
+                Tableau de bord
+            </h1>
 
-                <div class="stat-number">
-                    {{ $nombreMangas }}
-                </div>
-
-                <div class="stat-name">
-                    Mangas
-                </div>
-
-            </div>
-
-            <div class="stat">
-
-                <div class="stat-icon">
-                    👤
-                </div>
-
-                <div class="stat-number">
-                    {{ $nombreUtilisateurs }}
-                </div>
-
-                <div class="stat-name">
-                    Utilisateurs
-                </div>
-
-            </div>
-
-            <div class="stat">
-
-                <div class="stat-icon">
-                    📖
-                </div>
-
-                <div class="stat-number">
-                    {{ $empruntsEnCours }}
-                </div>
-
-                <div class="stat-name">
-                    Emprunts en cours
-                </div>
-
-            </div>
-
-            <div class="stat">
-
-                <div class="stat-icon">
-                    ↩️
-                </div>
-
-                <div class="stat-number">
-                    {{ $empruntsTermines }}
-                </div>
-
-                <div class="stat-name">
-                    Emprunts terminés
-                </div>
-
-            </div>
+            <p class="mt-3 text-slate-600">
+                Bienvenue dans l'espace d'administration de MangaLib.
+            </p>
 
         </div>
 
-        <div class="actions">
 
+        {{-- Cartes --}}
+        <div class="grid gap-6 md:grid-cols-2">
+
+
+            {{-- Gestion des mangas --}}
             <a
                 href="{{ route('admin.mangas.index') }}"
-                class="action"
+                class="group rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
-                📚 Gérer les mangas
+
+                <div class="flex items-start justify-between">
+
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-2xl">
+                        📚
+                    </div>
+
+                    <span class="text-slate-400 transition group-hover:translate-x-1 group-hover:text-indigo-600">
+                        →
+                    </span>
+
+                </div>
+
+
+                <h2 class="mt-5 text-xl font-bold text-slate-900">
+                    Gestion des mangas
+                </h2>
+
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Ajouter, modifier et supprimer les mangas du catalogue.
+                </p>
+
             </a>
 
+
+            {{-- Gestion des emprunts --}}
             <a
-    href="{{ route('admin.emprunts.index') }}"
-    class="action"
->
-    📖 Gérer les emprunts
-</a>
+                href="{{ route('admin.emprunts.index') }}"
+                class="group rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+            >
+
+                <div class="flex items-start justify-between">
+
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-2xl">
+                        📖
+                    </div>
+
+                    <span class="text-slate-400 transition group-hover:translate-x-1 group-hover:text-purple-600">
+                        →
+                    </span>
+
+                </div>
+
+
+                <h2 class="mt-5 text-xl font-bold text-slate-900">
+                    Gestion des emprunts
+                </h2>
+
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Consulter les emprunts effectués par les utilisateurs.
+                </p>
+
+            </a>
+
+
+        </div>
+
+
+        {{-- Retour catalogue --}}
+        <div class="mt-10">
 
             <a
                 href="{{ route('mangas.index') }}"
-                class="action"
+                class="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-5 py-3 font-semibold text-white transition hover:bg-slate-700"
             >
-                👀 Voir le catalogue
+                ← Retour au catalogue
             </a>
 
         </div>
 
-    </div>
+
+    </main>
 
 </body>
 

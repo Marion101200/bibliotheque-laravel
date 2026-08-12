@@ -1,95 +1,99 @@
-<nav class="navbar">
-    <div class="navbar-container">
+<nav class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
 
-        <a href="{{ route('mangas.index') }}" class="logo">
-            📚 MangaLib
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+
+        {{-- Logo --}}
+        <a
+            href="{{ route('mangas.index') }}"
+            class="flex items-center gap-2 text-xl font-extrabold text-slate-900 transition hover:text-indigo-600"
+        >
+            <span class="text-2xl">📚</span>
+            <span>MangaLib</span>
         </a>
 
-        <div class="navbar-links">
 
-            <a href="{{ route('mangas.index') }}">
+        {{-- Navigation --}}
+        <div class="flex items-center gap-2 sm:gap-5">
+
+            {{-- Catalogue --}}
+            <a
+                href="{{ route('mangas.index') }}"
+                class="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-indigo-50 hover:text-indigo-600 sm:block"
+            >
                 Catalogue
             </a>
 
+
             @auth
-                <a href="{{ route('emprunts.index') }}">
+
+                {{-- Mes emprunts --}}
+                <a
+                    href="{{ route('emprunts.index') }}"
+                    class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                    <span class="hidden sm:inline">📖 </span>
                     Mes emprunts
                 </a>
 
+
+                {{-- Administration --}}
                 @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('admin') }}">
-                        Administration
+
+                    <a
+                        href="{{ route('admin') }}"
+                        class="rounded-lg bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-100"
+                    >
+                        👑 <span class="hidden sm:inline">Administration</span>
                     </a>
+
                 @endif
 
+
+                {{-- Utilisateur --}}
+                <div class="hidden border-l border-slate-200 pl-4 text-sm text-slate-500 md:block">
+                    👤 {{ auth()->user()->name }}
+                </div>
+
+
+                {{-- Déconnexion --}}
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
 
-                    <button type="submit">
-                        Déconnexion
+                    <button
+                        type="submit"
+                        class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-red-50 hover:text-red-600"
+                    >
+                        🚪
+                        <span class="hidden sm:inline">
+                            Déconnexion
+                        </span>
                     </button>
                 </form>
+
+
             @else
-                <a href="{{ route('login') }}">
+
+                {{-- Connexion --}}
+                <a
+                    href="{{ route('login') }}"
+                    class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+                >
                     Connexion
                 </a>
 
-                <a href="{{ route('register') }}">
+
+                {{-- Inscription --}}
+                <a
+                    href="{{ route('register') }}"
+                    class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+                >
                     Inscription
                 </a>
+
             @endauth
 
         </div>
 
     </div>
+
 </nav>
-
-<style>
-    .navbar {
-        background-color: #222;
-        padding: 15px 30px;
-        margin-bottom: 30px;
-    }
-
-    .navbar-container {
-        max-width: 1200px;
-        margin: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .logo {
-        color: white;
-        text-decoration: none;
-        font-size: 22px;
-        font-weight: bold;
-    }
-
-    .navbar-links {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .navbar-links a {
-        color: white;
-        text-decoration: none;
-    }
-
-    .navbar-links a:hover {
-        text-decoration: underline;
-    }
-
-    .navbar-links button {
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .navbar-links button:hover {
-        text-decoration: underline;
-    }
-</style>

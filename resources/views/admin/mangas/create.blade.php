@@ -1,129 +1,294 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <title>Ajouter un manga</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ajouter un manga - MangaLib</title>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
 
-    <h1>Ajouter un manga</h1>
+<body class="min-h-screen bg-slate-100 text-slate-900">
 
-    @if($errors->any())
-        <div>
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    @include('components.navbar')
 
-    <form
-        action="{{ route('admin.mangas.store') }}"
-        method="POST"
-        enctype="multipart/form-data"
-    >
 
-        @csrf
+    <main class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
 
-        <div>
-            <label for="titre">Titre :</label>
-            <input
-                type="text"
-                id="titre"
-                name="titre"
-                value="{{ old('titre') }}"
-                required
+        {{-- En-tête --}}
+        <div class="mb-8">
+
+            <a
+                href="{{ route('admin.mangas.index') }}"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-indigo-600"
             >
+                ← Retour à la gestion des mangas
+            </a>
+
+            <p class="mt-6 text-sm font-semibold uppercase tracking-wider text-indigo-600">
+                Administration
+            </p>
+
+            <h1 class="mt-1 text-3xl font-extrabold text-slate-900">
+                Ajouter un manga
+            </h1>
+
+            <p class="mt-2 text-slate-500">
+                Ajoutez un nouveau manga au catalogue.
+            </p>
+
         </div>
 
-        <br>
 
-        <div>
-            <label for="auteur">Auteur :</label>
-            <input
-                type="text"
-                id="auteur"
-                name="auteur"
-                value="{{ old('auteur') }}"
-                required
-            >
-        </div>
+        {{-- Erreurs --}}
+        @if($errors->any())
 
-        <br>
+            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-5">
 
-        <div>
-            <label for="genre">Genre :</label>
-            <input
-                type="text"
-                id="genre"
-                name="genre"
-                value="{{ old('genre') }}"
-                required
-            >
-        </div>
+                <div class="flex items-center gap-2 font-bold text-red-800">
+                    ⚠️ Une erreur est survenue
+                </div>
 
-        <br>
+                <ul class="mt-3 list-inside list-disc space-y-1 text-sm text-red-700">
 
-        <div>
-            <label for="description">Description :</label>
-            <textarea
-                id="description"
-                name="description"
-            >{{ old('description') }}</textarea>
-        </div>
+                    @foreach($errors->all() as $error)
 
-        <br>
+                        <li>
+                            {{ $error }}
+                        </li>
 
-        <div>
-            <label for="nombre_tomes">Nombre de tomes :</label>
-            <input
-                type="number"
-                id="nombre_tomes"
-                name="nombre_tomes"
-                min="1"
-                value="{{ old('nombre_tomes', 1) }}"
-                required
-            >
-        </div>
+                    @endforeach
 
-        <br>
+                </ul>
 
-        <div>
-            <label for="image">Image :</label>
-            <input
-                type="file"
-                id="image"
-                name="image"
-                accept="image/jpeg,image/png,image/jpg,image/webp"
-            >
-        </div>
+            </div>
 
-        <br>
+        @endif
 
-        <div>
-            <label for="disponible">Disponibilité :</label>
 
-            <select name="disponible" id="disponible">
-                <option value="1">Disponible</option>
-                <option value="0">Indisponible</option>
-            </select>
-        </div>
+        {{-- Formulaire --}}
+        <form
+            action="{{ route('admin.mangas.store') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8"
+        >
 
-        <br>
+            @csrf
 
-        <button type="submit">
-            Ajouter le manga
-        </button>
 
-    </form>
+            <div class="space-y-6">
 
-    <br>
 
-    <a href="{{ route('admin.mangas.index') }}">
-        Retour au catalogue
-    </a>
+                {{-- Titre --}}
+                <div>
+
+                    <label
+                        for="titre"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Titre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="titre"
+                        name="titre"
+                        value="{{ old('titre') }}"
+                        required
+                        placeholder="Ex : Jujutsu Kaisen"
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    >
+
+                </div>
+
+
+                {{-- Auteur --}}
+                <div>
+
+                    <label
+                        for="auteur"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Auteur
+                    </label>
+
+                    <input
+                        type="text"
+                        id="auteur"
+                        name="auteur"
+                        value="{{ old('auteur') }}"
+                        required
+                        placeholder="Ex : Gege Akutami"
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    >
+
+                </div>
+
+
+                {{-- Genre --}}
+                <div>
+
+                    <label
+                        for="genre"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Genre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="genre"
+                        name="genre"
+                        value="{{ old('genre') }}"
+                        required
+                        placeholder="Ex : Shonen"
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    >
+
+                </div>
+
+
+                {{-- Description --}}
+                <div>
+
+                    <label
+                        for="description"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="6"
+                        placeholder="Présentez brièvement le manga..."
+                        class="w-full resize-y rounded-xl border border-slate-300 px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    >{{ old('description') }}</textarea>
+
+                </div>
+
+
+                {{-- Nombre de tomes + disponibilité --}}
+                <div class="grid gap-6 sm:grid-cols-2">
+
+
+                    {{-- Tomes --}}
+                    <div>
+
+                        <label
+                            for="nombre_tomes"
+                            class="mb-2 block text-sm font-semibold text-slate-700"
+                        >
+                            Nombre de tomes
+                        </label>
+
+                        <input
+                            type="number"
+                            id="nombre_tomes"
+                            name="nombre_tomes"
+                            min="1"
+                            value="{{ old('nombre_tomes', 1) }}"
+                            required
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                        >
+
+                    </div>
+
+
+                    {{-- Disponibilité --}}
+                    <div>
+
+                        <label
+                            for="disponible"
+                            class="mb-2 block text-sm font-semibold text-slate-700"
+                        >
+                            Disponibilité
+                        </label>
+
+                        <select
+                            name="disponible"
+                            id="disponible"
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                        >
+
+                            <option value="1">
+                                Disponible
+                            </option>
+
+                            <option value="0">
+                                Indisponible
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                {{-- Image --}}
+                <div>
+
+                    <label
+                        for="image"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Image de couverture
+                    </label>
+
+                    <div class="rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center transition hover:border-indigo-400">
+
+                        <div class="mb-3 text-4xl">
+                            🖼️
+                        </div>
+
+                        <p class="mb-3 text-sm text-slate-500">
+                            JPG, PNG ou WEBP
+                        </p>
+
+                        <input
+                            type="file"
+                            id="image"
+                            name="image"
+                            accept="image/jpeg,image/png,image/jpg,image/webp"
+                            class="mx-auto block w-full max-w-md text-sm text-slate-500 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                {{-- Boutons --}}
+                <div class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+
+                    <a
+                        href="{{ route('admin.mangas.index') }}"
+                        class="rounded-xl border border-slate-300 px-5 py-3 text-center font-semibold text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="rounded-xl bg-indigo-600 px-6 py-3 font-bold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        + Ajouter le manga
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </main>
 
 </body>
+
 </html>

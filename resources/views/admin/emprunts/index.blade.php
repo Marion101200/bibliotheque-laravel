@@ -5,214 +5,293 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Gestion des emprunts</title>
+    <title>Gestion des emprunts - MangaLib</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 30px;
-        }
-
-        h1 {
-            margin-bottom: 30px;
-        }
-
-        .table-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            overflow-x: auto;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #222;
-            color: white;
-        }
-
-        .en-cours {
-            color: #c27a00;
-            font-weight: bold;
-        }
-
-        .termine {
-            color: #16803c;
-            font-weight: bold;
-        }
-
-        .retour {
-            display: inline-block;
-            margin-top: 20px;
-            color: #222;
-            text-decoration: none;
-        }
-
-        .filtres {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    align-items: center;
-}
-
-.filtres select,
-.filtres button,
-.filtres a {
-    padding: 10px 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-.filtres button {
-    background-color: #222;
-    color: white;
-    cursor: pointer;
-}
-
-.filtres a {
-    background-color: #ddd;
-    color: #222;
-    text-decoration: none;
-}
-    </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+
+<body class="min-h-screen bg-slate-100 text-slate-900">
 
     @include('components.navbar')
 
-    <div class="container">
 
-        <h1>📖 Gestion des emprunts</h1>
-        <form method="GET" action="{{ route('admin.emprunts.index') }}" class="filtres">
+    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
 
-    <select name="statut">
 
-        <option value="">
-            Tous les emprunts
-        </option>
+        {{-- En-tête --}}
+        <div class="mb-8">
 
-        <option
-            value="en_cours"
-            {{ request('statut') === 'en_cours' ? 'selected' : '' }}
+            <a
+                href="{{ route('admin') }}"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-indigo-600"
+            >
+                ← Retour à l'administration
+            </a>
+
+            <div class="mt-6">
+
+                <p class="text-sm font-semibold uppercase tracking-wider text-indigo-600">
+                    Administration
+                </p>
+
+                <h1 class="mt-1 text-3xl font-extrabold text-slate-900">
+                    📖 Gestion des emprunts
+                </h1>
+
+                <p class="mt-2 text-slate-500">
+                    Consultez les emprunts effectués par les utilisateurs.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {{-- Filtres --}}
+        <form
+            method="GET"
+            action="{{ route('admin.emprunts.index') }}"
+            class="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"
         >
-            Emprunts en cours
-        </option>
 
-        <option
-            value="termine"
-            {{ request('statut') === 'termine' ? 'selected' : '' }}
-        >
-            Emprunts terminés
-        </option>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
 
-    </select>
+                <div class="flex-1 sm:max-w-xs">
 
-    <button type="submit">
-        Filtrer
-    </button>
+                    <label
+                        for="statut"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Filtrer par statut
+                    </label>
 
-    <a href="{{ route('admin.emprunts.index') }}">
-        Réinitialiser
-    </a>
+                    <select
+                        name="statut"
+                        id="statut"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    >
 
-</form>
+                        <option value="">
+                            Tous les emprunts
+                        </option>
 
+                        <option
+                            value="en_cours"
+                            {{ request('statut') === 'en_cours' ? 'selected' : '' }}
+                        >
+                            Emprunts en cours
+                        </option>
+
+                        <option
+                            value="termine"
+                            {{ request('statut') === 'termine' ? 'selected' : '' }}
+                        >
+                            Emprunts terminés
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="flex gap-2 sm:mt-6">
+
+                    <button
+                        type="submit"
+                        class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                    >
+                        Filtrer
+                    </button>
+
+                    <a
+                        href="{{ route('admin.emprunts.index') }}"
+                        class="rounded-xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Réinitialiser
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+
+        {{-- Liste vide --}}
         @if($emprunts->isEmpty())
 
-            <p>Aucun emprunt enregistré.</p>
+            <div class="rounded-2xl bg-white px-6 py-16 text-center shadow-sm ring-1 ring-slate-200">
+
+                <div class="text-5xl">
+                    📖
+                </div>
+
+                <h2 class="mt-4 text-xl font-bold text-slate-900">
+                    Aucun emprunt
+                </h2>
+
+                <p class="mt-2 text-slate-500">
+                    Aucun emprunt ne correspond aux critères sélectionnés.
+                </p>
+
+            </div>
+
 
         @else
 
-            <div class="table-container">
 
-                <table>
+            {{-- Tableau --}}
+            <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
 
-                    <thead>
-                        <tr>
-                            <th>Utilisateur</th>
-                            <th>Manga</th>
-                            <th>Date d'emprunt</th>
-                            <th>Date de retour</th>
-                            <th>Statut</th>
-                        </tr>
-                    </thead>
+                <div class="overflow-x-auto">
 
-                    <tbody>
+                    <table class="w-full min-w-[750px] text-left">
 
-                        @foreach($emprunts as $emprunt)
+                        <thead class="bg-slate-800 text-sm text-white">
 
                             <tr>
 
-                                <td>
-                                    {{ $emprunt->user->name }}
-                                </td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Utilisateur
+                                </th>
 
-                                <td>
-                                    {{ $emprunt->manga->titre }}
-                                </td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Manga
+                                </th>
 
-                                <td>
-                                    {{ $emprunt->date_emprunt }}
-                                </td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Date d'emprunt
+                                </th>
 
-                                <td>
-                                    {{ $emprunt->date_retour ?? '-' }}
-                                </td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Date de retour
+                                </th>
 
-                                <td>
-
-                                    @if($emprunt->date_retour)
-
-                                        <span class="termine">
-                                            Terminé
-                                        </span>
-
-                                    @else
-
-                                        <span class="en-cours">
-                                            En cours
-                                        </span>
-
-                                    @endif
-
-                                </td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Statut
+                                </th>
 
                             </tr>
 
-                        @endforeach
+                        </thead>
 
-                    </tbody>
 
-                </table>
+                        <tbody class="divide-y divide-slate-200">
+
+                            @foreach($emprunts as $emprunt)
+
+                                <tr class="transition hover:bg-slate-50">
+
+
+                                    {{-- Utilisateur --}}
+                                    <td class="px-6 py-5">
+
+                                        <div class="flex items-center gap-3">
+
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+                                                {{ strtoupper(substr($emprunt->user->name, 0, 1)) }}
+                                            </div>
+
+                                            <div>
+
+                                                <p class="font-semibold text-slate-900">
+                                                    {{ $emprunt->user->name }}
+                                                </p>
+
+                                                <p class="text-xs text-slate-400">
+                                                    Utilisateur
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    {{-- Manga --}}
+                                    <td class="px-6 py-5">
+
+                                        <span class="font-semibold text-slate-800">
+                                            {{ $emprunt->manga->titre }}
+                                        </span>
+
+                                    </td>
+
+
+                                    {{-- Date emprunt --}}
+                                    <td class="whitespace-nowrap px-6 py-5 text-sm text-slate-600">
+
+                                        {{ $emprunt->date_emprunt }}
+
+                                    </td>
+
+
+                                    {{-- Date retour --}}
+                                    <td class="whitespace-nowrap px-6 py-5 text-sm text-slate-600">
+
+                                        {{ $emprunt->date_retour ?? '-' }}
+
+                                    </td>
+
+
+                                    {{-- Statut --}}
+                                    <td class="px-6 py-5">
+
+                                        @if($emprunt->date_retour)
+
+                                            <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700">
+
+                                                <span class="h-2 w-2 rounded-full bg-green-500"></span>
+
+                                                Terminé
+
+                                            </span>
+
+                                        @else
+
+                                            <span class="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-700">
+
+                                                <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+
+                                                En cours
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
         @endif
 
-        <a href="{{ route('admin') }}" class="retour">
-            ← Retour à l'administration
-        </a>
 
-    </div>
+        {{-- Retour --}}
+        <div class="mt-8">
+
+            <a
+                href="{{ route('admin') }}"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-indigo-600"
+            >
+                ← Retour au tableau de bord
+            </a>
+
+        </div>
+
+
+    </main>
 
 </body>
 
