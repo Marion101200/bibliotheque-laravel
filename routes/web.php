@@ -6,6 +6,7 @@ use App\Http\Controllers\MangaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminMangaController;
 use App\Http\Controllers\EmpruntController;
+use App\Http\Controllers\AdminEmpruntController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -66,6 +67,8 @@ Route::delete('/emprunts/{emprunt}', [EmpruntController::class, 'destroy'])
 
         Route::delete('/mangas/{manga}', [AdminMangaController::class, 'destroy'])
             ->name('mangas.destroy');
+            Route::get('/emprunts', [AdminEmpruntController::class, 'index'])
+    ->name('emprunts.index');
     });
 });
 
