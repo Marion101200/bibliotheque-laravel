@@ -1,157 +1,338 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>Catalogue des mangas</title>
+    <title>Catalogue des mangas</title>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 30px;
-        background-color: #f5f5f5;
-    }
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    h1 {
-        text-align: center;
-        margin-bottom: 30px;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #222;
+        }
 
-    .catalogue {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 25px;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    .manga {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+        .page-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
 
-    .manga img {
-        display: block;
-        width: 150px;
-        height: 220px;
-        object-fit: cover;
-        margin: 0 auto 15px;
-        border-radius: 5px;
-    }
+        .page-title h1 {
+            margin-bottom: 10px;
+        }
 
-    .manga h2 {
-        margin-top: 0;
-        font-size: 20px;
-    }
+        .page-title p {
+            color: #666;
+        }
 
-    .manga p {
-        margin: 8px 0;
-    }
+        .catalogue {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+        }
 
-    .disponible {
-        color: green;
-        font-weight: bold;
-    }
+        .manga-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-    .indisponible {
-        color: red;
-        font-weight: bold;
-    }
+        .manga-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        }
 
-.emprunter {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 15px;
-    background-color: #333;
-    color: white;
+        .manga-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .no-image {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ddd;
+            color: #777;
+        }
+
+        .manga-content {
+            padding: 20px;
+        }
+
+        .manga-content h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 21px;
+        }
+
+        .manga-info {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .disponible {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        .indisponible {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .emprunt-form {
+            margin-top: 18px;
+        }
+
+        .emprunter {
+            width: 100%;
+            padding: 11px;
+            background-color: #222;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .emprunter:hover {
+            background-color: #444;
+        }
+
+        .message {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 12px 20px;
+            background-color: #dff5e5;
+            color: #176b2c;
+            border-radius: 6px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .filtres {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filtres input,
+.filtres select {
+    padding: 11px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.filtres input {
+    flex: 1;
+    min-width: 250px;
+}
+
+.filtres button,
+.filtres a {
+    padding: 11px 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.emprunter:hover {
-    background-color: #555;
+.filtres button {
+    background-color: #222;
+    color: white;
 }
-</style>
-```
 
+.filtres a {
+    background-color: #ddd;
+    color: #222;
+}
+    </style>
 </head>
 
 <body>
 
-```
-<h1>📚 Catalogue des mangas</h1>
+    @include('components.navbar')
 
-@if(session('success'))
-    <p>{{ session('success') }}</p>
-@endif
+    <div class="container">
 
-<div class="catalogue">
+        <div class="page-title">
+            <h1>📚 Catalogue des mangas</h1>
+            <p>Découvrez notre collection de mangas</p>
+        </div>
 
-    @forelse($mangas as $manga)
+        <form method="GET" action="{{ route('mangas.index') }}" class="filtres">
 
-        <div class="manga">
+    <input
+        type="text"
+        name="recherche"
+        placeholder="Rechercher un manga ou un auteur..."
+        value="{{ request('recherche') }}"
+    >
 
-            @if($manga->image)
-                <img
-                    src="{{ asset('storage/' . $manga->image) }}"
-                    alt="{{ $manga->titre }}"
-                >
-            @endif
+    <select name="genre">
+        <option value="">Tous les genres</option>
 
-            <h2>{{ $manga->titre }}</h2>
+        @foreach($genres as $genre)
+            <option
+                value="{{ $genre }}"
+                {{ request('genre') == $genre ? 'selected' : '' }}
+            >
+                {{ $genre }}
+            </option>
+        @endforeach
+    </select>
 
-            <p>
-                <strong>Auteur :</strong>
-                {{ $manga->auteur }}
-            </p>
+    <select name="disponibilite">
+        <option value="">Toutes les disponibilités</option>
 
-            <p>
-                <strong>Genre :</strong>
-                {{ $manga->genre }}
-            </p>
+        <option
+            value="1"
+            {{ request('disponibilite') === '1' ? 'selected' : '' }}
+        >
+            Disponible
+        </option>
 
-            <p>
-                <strong>Nombre de tomes :</strong>
-                {{ $manga->nombre_tomes }}
-            </p>
+        <option
+            value="0"
+            {{ request('disponibilite') === '0' ? 'selected' : '' }}
+        >
+            Indisponible
+        </option>
+    </select>
 
-            @if($manga->disponible)
+    <button type="submit">
+        Rechercher
+    </button>
 
-                <p class="disponible">
-                    Disponible
-                </p>
-
-<form action="{{ route('emprunts.store', $manga) }}" method="POST"> @csrf
-
-<button type="submit" class="emprunter">
-    Emprunter
-</button>
+    <a href="{{ route('mangas.index') }}">
+        Réinitialiser
+    </a>
 
 </form>
 
-            @else
+        @if(session('success'))
+            <div class="message">
+                {{ session('success') }}
+            </div>
+        @endif
 
-                <p class="indisponible">
-                    Indisponible
-                </p>
+        @if(session('error'))
+            <div class="message">
+                {{ session('error') }}
+            </div>
+        @endif
 
-            @endif
+        @if($mangas->isEmpty())
 
-        </div>
+            <div class="empty">
+                <h2>Aucun manga disponible</h2>
+                <p>Le catalogue est actuellement vide.</p>
+            </div>
 
-    @empty
+        @else
 
-        <p>Aucun manga dans le catalogue.</p>
+            <div class="catalogue">
 
-    @endforelse
+                @foreach($mangas as $manga)
 
-</div>
-```
+                    <div class="manga-card">
+
+                        @if($manga->image)
+
+                            <img
+                                src="{{ asset('storage/' . $manga->image) }}"
+                                alt="{{ $manga->titre }}"
+                                class="manga-image"
+                            >
+
+                        @else
+
+                            <div class="no-image">
+                                Aucune image
+                            </div>
+
+                        @endif
+
+                        <div class="manga-content">
+
+                            <a href="{{ route('mangas.show', $manga) }}">
+    <h2>{{ $manga->titre }}</h2>
+</a>
+
+                            <p class="manga-info">
+                                <strong>Auteur :</strong>
+                                {{ $manga->auteur }}
+                            </p>
+
+                            <p class="manga-info">
+                                <strong>Genre :</strong>
+                                {{ $manga->genre }}
+                            </p>
+
+                            <p class="manga-info">
+                                <strong>Tomes :</strong>
+                                {{ $manga->nombre_tomes }}
+                            </p>
+
+                            @if($manga->disponible)
+
+                                <p class="disponible">
+                                    ● Disponible
+                                </p>
+
+                                <form
+                                    action="{{ route('emprunts.store', $manga) }}"
+                                    method="POST"
+                                    class="emprunt-form"
+                                >
+                                    @csrf
+
+                                    <button type="submit" class="emprunter">
+                                        Emprunter
+                                    </button>
+                                </form>
+
+                            @else
+
+                                <p class="indisponible">
+                                    ● Indisponible
+                                </p>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+        @endif
+
+    </div>
 
 </body>
 </html>

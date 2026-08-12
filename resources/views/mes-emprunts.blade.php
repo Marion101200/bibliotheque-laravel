@@ -69,8 +69,9 @@
 </head>
 
 <body>
+    @include('components.navbar')
 
-```
+
 <h1>📚 Mes emprunts</h1>
 
 @if(session('success'))
@@ -123,7 +124,7 @@
     </div>
 
 @endif
-```
+
 
 </body>
 </html>

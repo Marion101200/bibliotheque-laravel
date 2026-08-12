@@ -10,11 +10,38 @@ class MangaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-             $mangas = Manga::all();
+        $query = Manga::query();
 
-    return view('catalogue', compact('mangas'));
+        // Recherche par titre ou auteur
+        if ($request->filled('recherche')) {
+            $recherche = $request->recherche;
+
+            $query->where(function ($q) use ($recherche) {
+                $q->where('titre', 'like', '%' . $recherche . '%')
+                  ->orWhere('auteur', 'like', '%' . $recherche . '%');
+            });
+        }
+
+        // Filtre par genre
+        if ($request->filled('genre')) {
+            $query->where('genre', $request->genre);
+        }
+
+        // Filtre par disponibilité
+        if ($request->filled('disponibilite')) {
+            $query->where('disponible', $request->disponibilite);
+        }
+
+        $mangas = $query->get();
+
+        $genres = Manga::whereNotNull('genre')
+            ->where('genre', '!=', '')
+            ->distinct()
+            ->pluck('genre');
+
+        return view('catalogue', compact('mangas', 'genres'));
     }
 
     /**
@@ -36,10 +63,10 @@ class MangaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+public function show(Manga $manga)
+{
+    return view('manga-details', compact('manga'));
+}
 
     /**
      * Show the form for editing the specified resource.
