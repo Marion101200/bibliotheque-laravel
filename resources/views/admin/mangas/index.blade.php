@@ -160,21 +160,12 @@
                             {{-- Disponibilité --}}
                             <div class="mt-4">
 
-                                @if($manga->disponible)
-
-                                    <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                                        <span class="mr-2 h-2 w-2 rounded-full bg-green-500"></span>
-                                        Disponible
-                                    </span>
-
-                                @else
-
-                                    <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-                                        <span class="mr-2 h-2 w-2 rounded-full bg-red-500"></span>
-                                        Indisponible
-                                    </span>
-
-                                @endif
+<a
+    href="{{ route('mangas.show', $manga) }}"
+    class="mt-5 block w-full rounded-lg bg-gray-900 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-gray-700"
+>
+    Voir les tomes
+</a>
 
                             </div>
 

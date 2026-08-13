@@ -12,6 +12,7 @@ class Emprunt extends Model
     protected $fillable = [
         'user_id',
         'manga_id',
+        'tome_id',
         'date_emprunt',
         'date_retour',
     ];
@@ -25,4 +26,8 @@ class Emprunt extends Model
     {
         return $this->belongsTo(Manga::class);
     }
+    public function tome()
+{
+    return $this->belongsTo(Tome::class);
+}
 }

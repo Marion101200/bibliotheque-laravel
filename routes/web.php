@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/mes-emprunts', [EmpruntController::class, 'index'])
     ->name('emprunts.index');
 
-Route::post('/mangas/{manga}/emprunter', [EmpruntController::class, 'store'])
+Route::post('/tomes/{tome}/emprunter', [EmpruntController::class, 'store'])
     ->name('emprunts.store');
 
 Route::delete('/emprunts/{emprunt}', [EmpruntController::class, 'destroy'])

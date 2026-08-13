@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,6 @@
 
     @include('components.navbar')
 
-
     <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
 
         {{-- Retour au catalogue --}}
@@ -25,11 +25,10 @@
         </a>
 
 
-        {{-- Carte principale --}}
+        {{-- Informations du manga --}}
         <div class="overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-slate-200">
 
             <div class="grid md:grid-cols-2">
-
 
                 {{-- Image --}}
                 <div class="bg-slate-200 p-6 sm:p-10">
@@ -92,43 +91,44 @@
                     </h1>
 
 
-                    {{-- Informations --}}
-                    <div class="mt-6 space-y-4">
+                    {{-- Auteur --}}
+                    <div class="mt-6 flex items-center gap-3">
 
-                        <div class="flex items-center gap-3">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
+                            ✍️
+                        </span>
 
-                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                                ✍️
-                            </span>
+                        <div>
 
-                            <div>
-                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                    Auteur
-                                </p>
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                                Auteur
+                            </p>
 
-                                <p class="font-semibold text-slate-800">
-                                    {{ $manga->auteur }}
-                                </p>
-                            </div>
+                            <p class="font-semibold text-slate-800">
+                                {{ $manga->auteur }}
+                            </p>
 
                         </div>
 
+                    </div>
 
-                        <div class="flex items-center gap-3">
 
-                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                                📚
-                            </span>
+                    {{-- Nombre de tomes --}}
+                    <div class="mt-4 flex items-center gap-3">
 
-                            <div>
-                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                    Nombre de tomes
-                                </p>
+                        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
+                            📚
+                        </span>
 
-                                <p class="font-semibold text-slate-800">
-                                    {{ $manga->nombre_tomes }}
-                                </p>
-                            </div>
+                        <div>
+
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                                Nombre de tomes
+                            </p>
+
+                            <p class="font-semibold text-slate-800">
+                                {{ $manga->nombre_tomes }}
+                            </p>
 
                         </div>
 
@@ -152,86 +152,159 @@
 
                     @endif
 
-
-                    {{-- Disponibilité --}}
-                    <div class="mt-8 border-t border-slate-200 pt-6">
-
-                        @if($manga->disponible)
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="h-3 w-3 rounded-full bg-green-500"></span>
-
-                                <span class="font-bold text-green-700">
-                                    Disponible
-                                </span>
-
-                            </div>
-
-
-                            @auth
-
-                                <form
-                                    action="{{ route('emprunts.store', $manga) }}"
-                                    method="POST"
-                                    class="mt-4"
-                                >
-                                    @csrf
-
-                                    <button
-                                        type="submit"
-                                        class="w-full rounded-xl bg-indigo-600 px-6 py-4 font-bold text-white shadow-md transition hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                    >
-                                        📖 Emprunter ce manga
-                                    </button>
-
-                                </form>
-
-                            @else
-
-                                <div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
-
-                                    <p class="text-sm text-amber-800">
-                                        Connectez-vous pour pouvoir emprunter ce manga.
-                                    </p>
-
-                                    <a
-                                        href="{{ route('login') }}"
-                                        class="mt-3 inline-block font-semibold text-amber-900 underline hover:no-underline"
-                                    >
-                                        Se connecter →
-                                    </a>
-
-                                </div>
-
-                            @endauth
-
-
-                        @else
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="h-3 w-3 rounded-full bg-red-500"></span>
-
-                                <span class="font-bold text-red-700">
-                                    Indisponible
-                                </span>
-
-                            </div>
-
-                            <p class="mt-3 text-sm text-slate-500">
-                                Ce manga est actuellement emprunté.
-                            </p>
-
-                        @endif
-
-                    </div>
-
                 </div>
 
             </div>
 
         </div>
+
+
+        {{-- ============================= --}}
+        {{-- TOMES --}}
+        {{-- ============================= --}}
+
+        <section class="mt-8">
+
+            <div class="mb-5">
+
+                <h2 class="text-2xl font-extrabold text-slate-900">
+                    📚 Les tomes
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    Choisissez le tome que vous souhaitez emprunter.
+                </p>
+
+            </div>
+
+
+            @if($manga->tomes->isEmpty())
+
+                <div class="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
+
+                    <div class="text-4xl">
+                        📖
+                    </div>
+
+                    <p class="mt-3 font-semibold text-slate-700">
+                        Aucun tome disponible pour ce manga.
+                    </p>
+
+                </div>
+
+            @else
+
+                {{-- Grille des tomes --}}
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+
+                    @foreach($manga->tomes as $tome)
+
+                        <div
+                            class="flex flex-col rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-md"
+                        >
+
+                            {{-- Numéro --}}
+                            <div class="flex items-center justify-between">
+
+                                <span class="text-lg font-extrabold text-slate-900">
+                                    Tome {{ $tome->numero }}
+                                </span>
+
+                            </div>
+
+
+                            {{-- Titre du tome --}}
+                            @if($tome->titre)
+
+                                <p class="mt-2 line-clamp-2 min-h-[40px] text-sm text-slate-500">
+                                    {{ $tome->titre }}
+                                </p>
+
+                            @else
+
+                                <p class="mt-2 min-h-[40px] text-sm text-slate-400">
+                                    Aucun titre
+                                </p>
+
+                            @endif
+
+
+                            {{-- Statut --}}
+                            <div class="mt-4">
+
+                                @if($tome->disponible)
+
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700"
+                                    >
+                                        ● Disponible
+                                    </span>
+
+                                @else
+
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700"
+                                    >
+                                        ● Emprunté
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+
+                            {{-- Bouton --}}
+                            @if($tome->disponible)
+
+                                @auth
+
+                                    <form
+                                        action="{{ route('emprunts.store', $tome) }}"
+                                        method="POST"
+                                        class="mt-4"
+                                    >
+
+                                        @csrf
+
+                                        <button
+                                            type="submit"
+                                            class="w-full rounded-xl bg-indigo-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                                        >
+                                            Emprunter
+                                        </button>
+
+                                    </form>
+
+                                @else
+
+                                    <a
+                                        href="{{ route('login') }}"
+                                        class="mt-4 block rounded-xl bg-slate-100 px-3 py-2.5 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                                    >
+                                        Se connecter
+                                    </a>
+
+                                @endauth
+
+                            @else
+
+                                <div
+                                    class="mt-4 rounded-xl bg-slate-100 px-3 py-2.5 text-center text-sm font-semibold text-slate-400"
+                                >
+                                    Indisponible
+                                </div>
+
+                            @endif
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            @endif
+
+        </section>
 
     </main>
 

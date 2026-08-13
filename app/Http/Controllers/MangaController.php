@@ -63,11 +63,12 @@ class MangaController extends Controller
     /**
      * Display the specified resource.
      */
-public function show(Manga $manga)
+public function show(string $id)
 {
+    $manga = Manga::with('tomes')->findOrFail($id);
+
     return view('manga-details', compact('manga'));
 }
-
     /**
      * Show the form for editing the specified resource.
      */

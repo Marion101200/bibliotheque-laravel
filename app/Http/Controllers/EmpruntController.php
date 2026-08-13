@@ -5,60 +5,68 @@ namespace App\Http\Controllers;
 use App\Models\Emprunt;
 use App\Models\Manga;
 use Illuminate\Http\Request;
-
+use App\Models\Tome;
 class EmpruntController extends Controller
 {
-    public function index()
+public function index()
 {
-$emprunts = auth()->user()
-->emprunts()
-->with('manga')
-->whereNull('date_retour')
-->get();
+    $emprunts = auth()->user()
+        ->emprunts()
+        ->with('tome.manga')
+        ->whereNull('date_retour')
+        ->get();
 
-return view('mes-emprunts', compact('emprunts'));
-
+    return view('mes-emprunts', compact('emprunts'));
 }
-    public function store(Request $request, Manga $manga)
-    {
-        // Vérifie que le manga est disponible
-        if (!$manga->disponible) {
-            return back()->with('error', 'Ce manga est déjà emprunté.');
-        }
-
-        // Crée l'emprunt
-        Emprunt::create([
-            'user_id' => auth()->id(),
-            'manga_id' => $manga->id,
-            'date_emprunt' => now()->toDateString(),
-        ]);
-
-        // Rend le manga indisponible
-        $manga->update([
-            'disponible' => false,
-        ]);
-
-        return back()->with('success', 'Manga emprunté avec succès !');
+public function store(Request $request, Tome $tome)
+{
+    // Vérifie que le tome est disponible
+    if (!$tome->disponible) {
+        return back()->with('error', 'Ce tome est déjà emprunté.');
     }
 
-    public function destroy(Emprunt $emprunt)
-{
-// Vérifie que l'emprunt appartient bien à l'utilisateur connecté
-if ($emprunt->user_id !== auth()->id()) {
-abort(403);
+Emprunt::create([
+    'user_id' => auth()->id(),
+    'manga_id' => $tome->manga_id,
+    'tome_id' => $tome->id,
+    'date_emprunt' => now()->toDateString(),
+]);
+    // Rend uniquement ce tome indisponible
+    $tome->update([
+        'disponible' => false,
+    ]);
+
+    return back()->with('success', 'Tome emprunté avec succès !');
 }
 
-// Rend le manga disponible
-$emprunt->manga->update([
-    'disponible' => true,
-]);
+public function destroy(Emprunt $emprunt)
+{
+    // Vérifie que l'emprunt appartient bien à l'utilisateur connecté
+    if ($emprunt->user_id !== auth()->id()) {
+        abort(403);
+    }
 
-// Enregistre la date de retour
-$emprunt->update([
-    'date_retour' => now()->toDateString(),
-]);
+    // Si l'emprunt possède un tome
+    if ($emprunt->tome) {
 
-return back()->with('success', 'Manga rendu avec succès !');
+        // Rend uniquement ce tome disponible
+        $emprunt->tome->update([
+            'disponible' => true,
+        ]);
 
+    } else {
+
+        // Ancien emprunt créé avant la gestion des tomes
+        $emprunt->manga->update([
+            'disponible' => true,
+        ]);
+    }
+
+    // Enregistre la date de retour
+    $emprunt->update([
+        'date_retour' => now()->toDateString(),
+    ]);
+
+    return back()->with('success', 'Emprunt rendu avec succès !');
 }
 }
